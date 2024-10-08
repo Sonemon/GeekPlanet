@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="d-flex justify-content-between mb-3">
+      <a href="{% url 'geekplanet:anime-list' %}?page={{ request.GET.page }}" class="btn btn-primary">
+        Back to Anime List
+      </a>
+      <a href="{% url 'geekplanet:anime-update' pk=object.id %}" class="btn btn-secondary">
+        Update Anime INFO
+      </a>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <img src="{{ object.get_anime_picture }}" class="img-fluid" alt="{{ object.title }}">
+      </div>
+      <div class="col-md-8">
+        <h1 class="card-title">{{ object.title }}</h1>
+        <p class="card-text"><strong>Anime Type:</strong> {{ object.anime_type }}</p>
+        <p class="card-text"><strong>Number of Episodes:</strong> {{ object.episodes }}</p>
+        <p class="card-text"><strong>Episode Duration:</strong> {{ object.episode_duration }} minutes</p>
+        <p class="card-text"><strong>Genres:</strong> 
+          {% for genre in object.genres.all %}
+            {{ genre }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </p>
+        <p class="card-text"><strong>Status:</strong> {{ object.get_status_display }}</p>
+        <p class="card-text"><strong>Rating:</strong> {{ object.user_rating }}</p>
+        <p class="card-text"><strong>Description:</strong> {{ object.description }}</p>
+        <p class="card-text"><strong>Start Date:</strong> {{ object.start_date|date:"Y-m-d" }}</p>
+        <p class="card-text"><strong>End Date:</strong> {{ object.end_date|date:"Y-m-d" }}</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

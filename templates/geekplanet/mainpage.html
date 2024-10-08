@@ -1,1 +1,35 @@
 {% extends "base.html" %}
+
+{% block content %}
+  <h1>Recently added to the site:</h1>
+  <div id="recentAnimeCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="row">
+          {% for anime in latest_animes %}
+            <div class="col-md-4"> <!-- Задаем ширину для каждой плитки -->
+              <div class="card mb-3">
+                <img src="{{ anime.get_anime_picture }}" class="card-img-top" alt="{{ anime.title }}" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                  <h5 class="card-title">{{ anime.title }}</h5>
+                  <a href="{% url 'geekplanet:anime-detail' pk=anime.id %}" class="btn btn-primary">View Details</a>
+                </div>
+              </div>
+            </div>
+            {% if forloop.counter|divisibleby:3 and not forloop.last %}
+              </div><div class="row"> <!-- Закрываем текущую строку и начинаем новую каждые 3 плитки -->
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#recentAnimeCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#recentAnimeCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+{% endblock %}

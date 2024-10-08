@@ -10,12 +10,12 @@
     <div class="dropdown">
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
               aria-expanded="false">
-        GeekPlanet
+        {{ current_area|default:"GeekPlanet" }}
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <li><a class="dropdown-item" href="{% url 'geekplanet:mainpage' %}">GeekPlanet</a></li>
-        <li><a class="dropdown-item" href="#">Animes</a></li>
+        <li><a class="dropdown-item" href="{% url "geekplanet:anime-list" %}">Animes</a></li>
         <li><a class="dropdown-item" href="#">Films</a></li>
+        <li><a class="dropdown-item" href="{% url "geekplanet:user_list" %}">Geeks</a></li>
       </ul>
     </div>
   </div>
@@ -24,14 +24,12 @@
 
   <div class="col-auto text-end d-flex align-items-center">
     {% if user.is_authenticated %}
-      {% if user.avatar %}
-        <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}`s profile picture" class="rounded-circle"
-             style="width: 40px; height: 40px; margin-right: 10px;">
-      {% else %}
-        <img src="{% static 'default_avatar.png' %}" alt="Default Avatar" class="rounded-circle"
-             style="width: 40px; height: 40px; margin-right: 10px;">
-      {% endif %}
-      <span class="me-3">{{ user.username }}</span>  <!-- Имя пользователя -->
+      <img src="{{ current_user.get_profile_picture }}" alt="{{ current_user.username }}`s profile picture"
+           class="rounded-circle"
+           style="width: 40px; height: 40px; margin-right: 10px;">
+      <span class="me-3">
+        <a href={% url "geekplanet:user_detail" pk=current_user.id %}>{{ current_user.username }}</a>
+      </span>
       <form action="{% url 'logout' %}" method="post" style="display: inline;">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger">Logout</button>

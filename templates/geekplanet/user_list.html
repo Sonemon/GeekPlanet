@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>
+    Find other geeks!
+  </h1>
+  {% include "includes/search_form.html" %}
+
+  {% if user_list %}
+    <table class="table">
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>First name</th>
+        <th>Last name</th>
+      </tr>
+      {% for geek in user_list %}
+        <tr>
+          <td>{{ geek.id }}</td>
+          <td><a href="{% url "geekplanet:user_detail" pk=geek.id %}">{{ geek.username }}</a>
+          </td>
+          <td>{{ geek.first_name }}</td>
+          <td>{{ geek.last_name }}</td>
+        </tr>
+      {% endfor %}
+
+    </table>
+  {% else %}
+    <p>There are no geeks in the service.</p>
+  {% endif %}
+{% endblock %}

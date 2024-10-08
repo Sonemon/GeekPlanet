@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h1>
+      Anime
+      <a href="{% url 'geekplanet:anime-create' %}" class="btn btn-primary link-to-page ml-3"> <!-- Добавлен класс ml-3 для отступа -->
+        Add new Anime
+      </a>
+    </h1>
+
+    <div class="row mt-4">
+      {% if anime_list %}
+        {% for anime in anime_list %}
+          <div class="col-md-3 mb-4">
+            <div class="card" style="width: 100%; height: 100%;">
+              <a href="{% url 'geekplanet:anime-detail' pk=anime.id %}">
+                <img src="{{ anime.get_anime_picture }}" class="card-img-top" alt="{{ anime.title }}" style="height: 150px; object-fit: cover;">
+              </a>
+              <div class="card-body">
+                <h5 class="card-title">{{ anime.title }}</h5>
+                <p class="card-text"><strong>Type:</strong> {{ anime.anime_type }}</p>
+                <p class="card-text"><strong>Status:</strong> {{ anime.get_status_display }}</p>
+                <p class="card-text"><strong>Rating:</strong> {{ anime.user_rating }}</p>
+                <p class="card-text"><strong>Episodes:</strong> {{ anime.episodes }}</p>
+                <p class="card-text"><strong>Year:</strong> {{ anime.start_date|date:"Y" }}</p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <h1>There are no animes in the service.</h1>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
