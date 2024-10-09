@@ -9,7 +9,11 @@
           <a href="#"
              data-bs-toggle="modal"
              data-bs-target="#userModal"
-             data-geek='{"username": "{{ geek.username }}", "friends": {{ geek.friends.count }} }'
+             data-geek='{
+             "id": "{{ geek.id }}",
+             "username": "{{ geek.username }}",
+             "friends": {{ geek.friends.count }} 
+             }'
              class="text-decoration-none text-reset">
             <div class="card bg-dark text-light">
               <div class="card-body text-center">
