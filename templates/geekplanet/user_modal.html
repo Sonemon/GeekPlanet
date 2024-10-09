@@ -1,0 +1,21 @@
+{% load static %}
+<div id="userModal" class="modal fade" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userModalLabel">User Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="userModalContent">
+        <!-- User`s data -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Add Friend</button>
+        <a href="#" id="viewProfileButton" class="btn btn-outline-light" style="display:none;">View Profile</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/user_modal.js' %}"></script>

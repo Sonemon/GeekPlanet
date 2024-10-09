@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="container mt-5">
-    <h1>
+  <div class="container">
+    <h1 class="display-1 text-light">
       Anime
-      <a href="{% url 'geekplanet:anime-create' %}" class="btn btn-primary link-to-page ml-3"> <!-- Добавлен класс ml-3 для отступа -->
+      <a href="{% url 'geekplanet:anime-create' %}" class="btn btn-lg btn-light link-to-page ml-3">
         Add new Anime
       </a>
     </h1>

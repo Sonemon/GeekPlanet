@@ -1,3 +1,7 @@
+import os
+import random
+
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
@@ -15,6 +19,11 @@ class BasePageMixin:
         context = super().get_context_data(**kwargs)
         context["current_area"] = self.area_name
         context["current_user"] = self.request.user
+
+        # random backgroud from static
+        background_images_path = os.path.join(settings.BASE_DIR, "static", "img", "backgrounds")
+        background_images = os.listdir(background_images_path)
+        context["background_image"] = random.choice(background_images)
         return context
 
 

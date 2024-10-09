@@ -1,31 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>
-    Find other geeks!
-  </h1>
-  {% include "includes/search_form.html" %}
-
   {% if user_list %}
-    <table class="table">
-      <tr>
-        <th>ID</th>
-        <th>Username</th>
-        <th>First name</th>
-        <th>Last name</th>
-      </tr>
+    <h1 class="display-1 text-light mb-4">Find other geeks!</h1>
+    <div class="row">
       {% for geek in user_list %}
-        <tr>
-          <td>{{ geek.id }}</td>
-          <td><a href="{% url "geekplanet:user_detail" pk=geek.id %}">{{ geek.username }}</a>
-          </td>
-          <td>{{ geek.first_name }}</td>
-          <td>{{ geek.last_name }}</td>
-        </tr>
+        <div class="col-md-4 mb-4">
+          <a href="#"
+             data-bs-toggle="modal"
+             data-bs-target="#userModal"
+             data-geek='{"username": "{{ geek.username }}", "friends": {{ geek.friends.count }} }'
+             class="text-decoration-none text-reset">
+            <div class="card bg-dark text-light">
+              <div class="card-body text-center">
+                <img
+                    src="{{ geek.get_profile_picture }}"
+                    alt="{{ geek.username }}`s avatar"
+                    class="rounded-circle"
+                    style="width: 70px; height: 70px;">
+                <h5 class="card-title mt-2">{{ geek.username }}</h5>
+                <p class="card-text">
+                  {{ geek.friends.count }} friend{% if geek.friends.count != 1 %}s{% endif %}
+                </p>
+              </div>
+            </div>
+          </a>
+        </div>
       {% endfor %}
-
-    </table>
+    </div>
+    {% include "geekplanet/user_modal.html" %}
   {% else %}
-    <p>There are no geeks in the service.</p>
+    <h1 class="display-1 text-light">There are no geeks in the service.</h1>
   {% endif %}
 {% endblock %}
