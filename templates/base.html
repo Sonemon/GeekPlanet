@@ -18,7 +18,9 @@
 <main role="main" class="container">
   <div class="bg-opacity-50 bg-dark p-4">
     {% block content %}
-
+    {% endblock %}
+    {% block pagination %}
+      {% include "includes/pagination.html" %}
     {% endblock %}
   </div>
 </main>
