@@ -1,6 +1,8 @@
 from django.urls import path
 from .views import (
     MainPageView,
+    CustomLoginView,
+    CustomRegisterView,
     UserListView,
     UserDetailView,
     AnimeListView,
@@ -13,6 +15,8 @@ app_name = "geekplanet"
 
 urlpatterns = [
     path("", MainPageView.as_view(), name="mainpage"),
+    path("login/", CustomLoginView.as_view(), name="login"),
+    path("register/", CustomRegisterView.as_view(), name="register"),
     path("geeks/", UserListView.as_view(), name="user_list"),
     path("geeks/<int:pk>/", UserDetailView.as_view(), name="user_detail"),
     path("animes/", AnimeListView.as_view(), name="anime-list"),

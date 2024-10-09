@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg bg-dark text-light" style="width: 500px; border-radius: 15px;">
+      <!-- Image Section -->
+      <img src="{% static 'img/login_gif.gif' %}" class="card-img-top" alt="Register Image"
+           style="border-radius: 15px 15px 0 0; height: 200px; object-fit: cover;">
+
+      <!-- Form Section -->
+      <div class="card-body">
+        <h1 class="card-title text-center display-2 mb-3">Registration</h1>
+        {% if form.errors %}
+          <div class="alert alert-danger" role="alert">
+            Please correct the errors below.
+          </div>
+        {% endif %}
+        <form method="post" action="{% url 'geekplanet:register' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label for="id_username" class="form-label">Username:</label>
+            <div class="input-group">
+              {{ form.username }}
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="id_email" class="form-label">Email:</label>
+            <div class="input-group">
+              {{ form.email }}
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="id_password" class="form-label">Password:</label>
+            <div class="input-group">
+              {{ form.password1 }}
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="id_password2" class="form-label">Confirm Password:</label>
+            <div class="input-group">
+              {{ form.password2 }}
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="id_profile_picture" class="form-label">Profile Picture:</label>
+            <div class="input-group">
+              {{ form.profile_picture }}
+            </div>
+          </div>
+
+          <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">Register</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card-footer text-center" style="border-radius: 0 0 15px 15px;">
+        <p>Already have an account? <a href="{% url 'geekplanet:login' %}">Login</a></p>
+      </div>
+    </div>
+  </div>
+{% endblock %}
