@@ -33,7 +33,9 @@ class MainPageView(BasePageMixin,
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
-        context["latest_animes"] = Anime.objects.order_by("-id")[:5]
+        context["latest_animes"] = Anime.objects.order_by("-id")[:4]
+        context["num_animes"] = Anime.objects.count()
+        context["num_geeks"] = User.objects.count()
         return context
 
 

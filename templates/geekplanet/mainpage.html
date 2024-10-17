@@ -1,35 +1,75 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Recently added to the site:</h1>
-  <div id="recentAnimeCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <div class="row">
-          {% for anime in latest_animes %}
-            <div class="col-md-4"> <!-- Задаем ширину для каждой плитки -->
-              <div class="card mb-3">
-                <img src="{{ anime.get_anime_picture }}" class="card-img-top" alt="{{ anime.title }}" style="height: 200px; object-fit: cover;">
-                <div class="card-body">
-                  <h5 class="card-title">{{ anime.title }}</h5>
-                  <a href="{% url 'geekplanet:anime-detail' pk=anime.id %}" class="btn btn-primary">View Details</a>
-                </div>
+  <div class="container">
+    <h1 class="display-1 text-light">Recently added:</h1>
+    <div class="row mt-4">
+      {% for anime in latest_animes %}
+        <div class="col-md-3 mb-4">
+          <div class="card" style="width: 100%; height: 100%; position: relative; overflow: hidden;">
+            <a href="{% url 'geekplanet:anime-detail' pk=anime.id %}" class="text-decoration-none text-light">
+              <img src="{{ anime.get_anime_picture }}" alt="{{ anime.title }}"
+                   style="height: 400px; width: 100%; object-fit: cover;">
+              <div class="card-body anime-info"
+                   style="position: absolute; bottom: 0; left: 0; right: 0; background-color: rgba(0, 0, 0, 0.8); padding: 10px; transition: transform 0.5s ease;">
+                <h5 class="card-title">
+                  {{ anime.title|truncatechars:15 }}{% if anime.start_date %} ({{ anime.start_date.year }}
+                    ){% endif %}</h5>
+                <p class="card-text"><strong>Type:</strong> {{ anime.anime_type }}</p>
               </div>
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row mt-4">
+      <div class="col-md-3 mb-4">
+        <div class="card text-white" style="background-color: #6f42c1; opacity: 75%">
+          <a href="{% url 'geekplanet:anime-list' %}" class="text-decoration-none text-light" style="height: 100%;">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
+              <h5 class="card-title mb-3">Animes:</h5>
+              <h1 class="display-4">{{ num_animes }}</h1>
             </div>
-            {% if forloop.counter|divisibleby:3 and not forloop.last %}
-              </div><div class="row"> <!-- Закрываем текущую строку и начинаем новую каждые 3 плитки -->
-            {% endif %}
-          {% endfor %}
+          </a>
+        </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+        <div class="card text-white" style="background-color: #1f12c1; opacity: 75%">
+          <a href="{% url 'geekplanet:user-list' %}" class="text-decoration-none text-light" style="height: 100%;">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
+              <h5 class="card-title mb-3">Geeks:</h5>
+              <h1 class="display-4">{{ num_geeks }}</h1>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+        <div class="card text-white" style="background-color: #800000; opacity: 75%">
+          <a href="{% url 'geekplanet:anime-list' %}" class="text-decoration-none text-light" style="height: 100%;">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
+              <h5 class="card-title mb-3">Films:</h5>
+              <h1 class="display-4">{{ num_animes }}</h1>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+        <div class="card text-white" style="background-color: #005f00; opacity: 75%">
+          <a href="{% url 'geekplanet:anime-list' %}" class="text-decoration-none text-light" style="height: 100%;">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
+              <h5 class="card-title mb-3">Games:</h5>
+              <h1 class="display-4">{{ num_animes }}</h1>
+            </div>
+          </a>
         </div>
       </div>
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#recentAnimeCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#recentAnimeCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
   </div>
+
 {% endblock %}
