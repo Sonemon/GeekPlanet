@@ -1,8 +1,13 @@
+from io import BytesIO
+
 from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.base import ContentFile
 from django.db import models
 from django.conf import settings
+
+from PIL import Image
 
 import uuid
 
@@ -20,6 +25,25 @@ class User(AbstractUser):
             return self.profile_picture.url
         else:
             return settings.DEFAULT_PROFILE_PICTURE_URL
+
+    def save(self, *args, **kwargs):
+        if self.profile_picture:
+            avatar = Image.open(self.profile_picture)
+            width, height = avatar.size
+            new_size = min(width, height)
+            left = (width - new_size) / 2
+            top = (height - new_size) / 2
+            right = (width + new_size) / 2
+            bottom = (height + new_size) / 2
+            avatar = avatar.crop((left, top, right, bottom))
+            avatar = avatar.resize((new_size, new_size), Image.LANCZOS)
+            avatar_name = f"{uuid.uuid4()}_avatar.png"
+            img_io = BytesIO()
+            avatar.save(img_io, format='PNG')
+            img_file = ContentFile(img_io.getvalue(), name=avatar_name)
+            self.profile_picture.save(avatar_name, img_file, save=False)
+
+        super().save(*args, **kwargs)
 
 
 class Genre(models.Model):
@@ -76,11 +100,8 @@ class Anime(models.Model):
         else:
             return self.DEFAULT_ANIME_PICTURE_URL
 
-    import uuid
-
     def save(self, *args, **kwargs):
         if self.anime_picture:
-            # unique name for anime_pictures
             self.anime_picture.name = f"{uuid.uuid4()}_picture.png"
 
         super().save(*args, **kwargs)

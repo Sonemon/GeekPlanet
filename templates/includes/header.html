@@ -17,7 +17,7 @@
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <li><a class="dropdown-item" href="{% url "geekplanet:anime-list" %}">Animes</a></li>
           <li><a class="dropdown-item" href="#">Films</a></li>
-          <li><a class="dropdown-item" href="{% url "geekplanet:user_list" %}">Geeks</a></li>
+          <li><a class="dropdown-item" href="{% url "geekplanet:user-list" %}">Geeks</a></li>
         </ul>
       </div>
     </div>
@@ -30,7 +30,7 @@
              class="rounded-circle"
              style="width: 40px; height: 40px; margin-right: 10px;">
         <span class="me-3">
-        <a href={% url "geekplanet:user_detail" pk=current_user.id %}>{{ current_user.username }}</a>
+        <a href={% url "geekplanet:user-detail" pk=current_user.id %}>{{ current_user.username }}</a>
       </span>
         <form action="{% url 'geekplanet:logout' %}" method="post" style="display: inline;">
           {% csrf_token %}

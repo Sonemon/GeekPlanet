@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
-from .forms import AnimeForm, CustomUserCreationForm
+from .forms import AnimeForm, UserForm
 from .models import User, Anime, AnimeType, Review
 
 
@@ -23,6 +23,7 @@ class BasePageMixin:
         context["background_image"] = random.choice(background_images)
         context["current_area"] = self.area_name
         context["current_user"] = self.request.user
+        context["is_moderator"] = self.request.user.groups.filter(name="Moderators").exists()
         return context
 
 
@@ -58,17 +59,17 @@ class CustomLogoutView(BasePageMixin,
 class CustomRegisterView(BasePageMixin,
                          generic.TemplateView):
     template_name = "registration/register.html"
-    form_class = CustomUserCreationForm
+    form_class = UserForm
     success_url = reverse_lazy("geekplanet:mainpage")
 
     def get(self, request, *args, **kwargs):
+        form = self.form_class(is_update=False)
         context = self.get_context_data(**kwargs)
-        form = self.form_class()
         context['form'] = form
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, request.FILES)
+        form = self.form_class(request.POST, request.FILES, is_update=False)
         if form.is_valid():
             user = form.save()
             login(request, user)
@@ -95,6 +96,31 @@ class UserDetailView(LoginRequiredMixin,
                      generic.DetailView):
     model = User
     area_name = "Geeks"
+
+
+class UserUpdateView(LoginRequiredMixin,
+                     BasePageMixin,
+                     generic.UpdateView):
+    model = User
+    form_class = UserForm
+
+    def dispatch(self, request, *args, **kwargs):
+        is_moderator = request.user.groups.filter(name="Moderators").exists()
+        user_to_update = self.get_object()
+
+        if request.user != user_to_update and not is_moderator:
+            return redirect(reverse_lazy("geekplanet:mainpage"))
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+        form_class = form_class or self.get_form_class()
+        form_kwargs = self.get_form_kwargs()
+        form_kwargs["is_update"] = True
+        return form_class(**form_kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy("geekplanet:user-detail", kwargs={"pk": self.request.user.id})
 
 
 class AnimeListView(BasePageMixin,
