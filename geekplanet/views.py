@@ -4,7 +4,7 @@ import random
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
@@ -42,6 +42,15 @@ class CustomLoginView(BasePageMixin,
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
+            return redirect(reverse_lazy("geekplanet:mainpage"))
+        return super().dispatch(request, *args, **kwargs)
+
+
+class CustomLogoutView(BasePageMixin,
+                       LogoutView):
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
             return redirect(reverse_lazy("geekplanet:mainpage"))
         return super().dispatch(request, *args, **kwargs)
 

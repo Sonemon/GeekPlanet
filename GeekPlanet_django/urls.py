@@ -23,10 +23,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("geekplanet.urls", namespace="geekplanet")),
-    path("accounts/", include("django.contrib.auth.urls")),
     path("__debug__/", include("debug_toolbar.urls")),  # Debug Toolbar integration
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-#Automatic file maintenance during debug mode
+# Automatic file maintenance during debug mode
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

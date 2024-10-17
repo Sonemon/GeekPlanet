@@ -32,7 +32,7 @@
         <span class="me-3">
         <a href={% url "geekplanet:user_detail" pk=current_user.id %}>{{ current_user.username }}</a>
       </span>
-        <form action="{% url 'logout' %}" method="post" style="display: inline;">
+        <form action="{% url 'geekplanet:logout' %}" method="post" style="display: inline;">
           {% csrf_token %}
           <button type="submit" class="btn btn-danger">Logout</button>
         </form>

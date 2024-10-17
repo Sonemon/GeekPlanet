@@ -2,6 +2,7 @@ from django.urls import path
 from .views import (
     MainPageView,
     CustomLoginView,
+    CustomLogoutView,
     CustomRegisterView,
     UserListView,
     UserDetailView,
@@ -16,6 +17,7 @@ app_name = "geekplanet"
 urlpatterns = [
     path("", MainPageView.as_view(), name="mainpage"),
     path("login/", CustomLoginView.as_view(), name="login"),
+    path("logout/", CustomLogoutView.as_view(), name="logout"),
     path("register/", CustomRegisterView.as_view(), name="register"),
     path("geeks/", UserListView.as_view(), name="user_list"),
     path("geeks/<int:pk>/", UserDetailView.as_view(), name="user_detail"),
