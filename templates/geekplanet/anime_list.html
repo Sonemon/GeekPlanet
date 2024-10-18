@@ -25,7 +25,7 @@
                     {{ anime.title }}{% if anime.start_date %} ({{ anime.start_date.year }}){% endif %}</h5>
                   <p class="card-text"><strong>Type:</strong> {{ anime.anime_type }}</p>
                   <p class="card-text"><strong>Status:</strong> {{ anime.get_status_display }}</p>
-                  <p class="card-text"><strong>Rating:</strong> {{ anime.user_rating }}</p>
+                  <p class="card-text"><strong>Rating:</strong> {{ anime.average_rating }}</p>
                 </div>
               </a>
             </div>

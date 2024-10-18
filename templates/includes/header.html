@@ -30,8 +30,11 @@
              class="rounded-circle"
              style="width: 40px; height: 40px; margin-right: 10px;">
         <span class="me-3">
-        <a href={% url "geekplanet:user-detail" pk=current_user.id %}>{{ current_user.username }}</a>
-      </span>
+          <h4>
+            <a class="text-decoration-none text-reset"
+               href={% url "geekplanet:user-detail" pk=current_user.id %}>{{ current_user.username }}</a>
+          </h4>
+        </span>
         <form action="{% url 'geekplanet:logout' %}" method="post" style="display: inline;">
           {% csrf_token %}
           <button type="submit" class="btn btn-danger">Logout</button>

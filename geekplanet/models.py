@@ -119,6 +119,12 @@ class Anime(models.Model):
             object_id=self.id,
         )
 
+    def rew_count(self):
+        return Review.objects.filter(
+            content_type=ContentType.objects.get_for_model(self),
+            object_id=self.id,
+        ).count()
+
     def save(self, *args, **kwargs):
         if self.anime_picture:
             self.anime_picture.name = f"{uuid.uuid4()}_picture.png"
@@ -151,9 +157,9 @@ class Review(models.Model):
     def __str__(self) -> str:
         return f"{self.user.username} - {self.related_object}"
 
-    def clean(self):
-        if Review.objects.filter(
-            user=self.user,
+    def clean(self, user=None):
+        if user is not None and Review.objects.filter(
+            user=user,
             content_type=self.content_type,
             object_id=self.object_id,
         ).exists():

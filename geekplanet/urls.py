@@ -11,6 +11,7 @@ from .views import (
     AnimeCreateView,
     AnimeDetailView,
     AnimeUpdateView,
+    AnimeAddReviewView,
 )
 
 app_name = "geekplanet"
@@ -27,4 +28,5 @@ urlpatterns = [
     path("animes/create/", AnimeCreateView.as_view(), name="anime-create"),
     path("animes/<int:pk>/", AnimeDetailView.as_view(), name="anime-detail"),
     path("animes/<int:pk>/update/", AnimeUpdateView.as_view(), name="anime-update"),
+    path("anime/<int:pk>/add-review/", AnimeAddReviewView.as_view(), name="anime-add-review"),
 ]

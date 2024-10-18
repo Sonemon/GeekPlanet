@@ -1,6 +1,6 @@
 from django import forms
 
-from geekplanet.models import User, Anime
+from geekplanet.models import User, Anime, Review
 
 
 class UserForm(forms.ModelForm):
@@ -72,3 +72,21 @@ class AnimeForm(forms.ModelForm):
             "start_date": forms.DateInput(attrs={"type": "date"}),
             "end_date": forms.DateInput(attrs={"type": "date"}),
         }
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ["content", "rating", "character"]
+        widgets = {
+            "content": forms.Textarea(attrs={"class": "form-control", "rows": 5}),
+            "rating": forms.NumberInput(attrs={"class": "form-control", "min": 1, "max": 10}),
+            "character": forms.Select(attrs={"class": "form-control"}),
+        }
+        labels = {
+            "content": "Review:",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["rating"].initial = 1

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="d-flex justify-content-between mb-3">
+      <a href="{% url 'geekplanet:anime-detail' pk=anime.id %}" class="btn btn-lg btn-light">
+        Back to Anime
+      </a>
+    </div>
+
+    <h1 class="mb-4 text-center">Add Your Review for {{ anime.title }}</h1>
+
+    <div class="row justify-content-center">
+      <div class="col-md-8 bg-dark p-5 rounded-3">
+        <form method="post">
+          {% csrf_token %}
+          <div class="form-group mb-3">
+            {{ form.content.label_tag }}
+            {{ form.content }}
+          </div>
+
+          <div class="form-group mb-3">
+            {{ form.rating.label_tag }}
+            {{ form.rating }}
+          </div>
+
+          <div class="form-group mb-3">
+            {{ form.character.label_tag }}
+            {{ form.character }}
+          </div>
+
+          <button type="submit" class="btn btn-lg btn-success btn-block">Submit Review</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
