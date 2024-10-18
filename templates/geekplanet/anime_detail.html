@@ -60,23 +60,31 @@
 
     <hr class="my-4">
 
-    <form method="get" class="mb-3">
-      <select name="character" class="form-select" onchange="this.form.submit()">
-        <option value="">All Reviews</option>
-        <option value="positive" {% if request.GET.character == "positive" %}selected{% endif %}>Positive</option>
-        <option value="neutral" {% if request.GET.character == "neutral" %}selected{% endif %}>Neutral</option>
-        <option value="negative" {% if request.GET.character == "negative" %}selected{% endif %}>Negative</option>
-      </select>
-    </form>
+    <div class="mb-3">
+      <form method="get" class="d-inline">
+        <button type="submit" class="btn btn-light me-2" name="character" value="">
+          All Reviews
+        </button>
+        <button type="submit" class="btn btn-success me-2" name="character" value="positive">
+          Positive
+        </button>
+        <button type="submit" class="btn btn-dark me-2" name="character" value="neutral">
+          Neutral
+        </button>
+        <button type="submit" class="btn btn-danger" name="character" value="negative">
+          Negative
+        </button>
+      </form>
+    </div>
 
     <div class="reviews bg-dark bg-opacity-75 p-4 rounded-3">
       <h2 class="text-light mb-4">Reviews</h2>
       {% for review in reviews %}
         <div class="card mb-3 
-                    {% if review.character == "positive" %}bg-success bg-opacity-50
-                    {% elif review.character == "neutral" %}bg-dark bg-opacity-75
-                    {% elif review.character == "negative" %}bg-danger bg-opacity-50
-                    {% endif %}">
+                {% if review.character == "positive" %}bg-success bg-opacity-50
+                {% elif review.character == "neutral" %}bg-dark bg-opacity-75
+                {% elif review.character == "negative" %}bg-danger bg-opacity-50
+                {% endif %}">
           <div class="card-body">
             <h4 class="card-title">
               <a href="{% url 'geekplanet:user-detail' pk=review.user.id %}"
@@ -91,7 +99,7 @@
             <p class="card-text">
               <small class="text-white" style="font-size: 1.2rem;"><strong>Rating: {{ review.rating }}</strong></small>
               |
-              <small class="text-white" style="font-size: 1.2rem;"> {{ review.get_character_display }}</small>
+              <small class="text-white" style="font-size: 1.2rem;">{{ review.get_character_display }}</small>
             </p>
             <p class="card-text">
               <small class="text-white">Posted on: {{ review.created_at|date:"Y-m-d H:i" }}</small>

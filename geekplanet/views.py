@@ -154,20 +154,25 @@ class AnimeCreateView(LoginRequiredMixin,
     success_url = reverse_lazy("geekplanet:anime-list")
 
 
-class AnimeDetailView(BasePageMixin,
-                      generic.DetailView):
+class AnimeDetailView(BasePageMixin, generic.DetailView):
     model = Anime
     area_name = "Animes"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["reviews"] = Review.objects.filter(
+        character_filter = self.request.GET.get("character")
+
+        reviews = Review.objects.filter(
             content_type=ContentType.objects.get_for_model(Anime),
             object_id=self.object.id
         )
 
-        user_reviewed = context["reviews"].filter(
-            user=self.request.user).exists() if self.request.user.is_authenticated else False
+        if character_filter:
+            reviews = reviews.filter(character=character_filter)
+
+        context["reviews"] = reviews
+
+        user_reviewed = reviews.filter(user=self.request.user).exists() if self.request.user.is_authenticated else False
         context["user_reviewed"] = user_reviewed
 
         return context
