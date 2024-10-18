@@ -6,7 +6,7 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Avg, OuterRef, Subquery
+from django.db.models import Avg, OuterRef, Subquery, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
@@ -102,6 +102,20 @@ class UserListView(LoginRequiredMixin,
     paginate_by = 10
     template_name = "geekplanet/user_list.html"
     area_name = "Geeks"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        sort_by = self.request.GET.get('sort_by')
+        if sort_by == "friends_count":
+            queryset = queryset.annotate(friends_count=Count('friends')).order_by('-friends_count')
+        elif sort_by == "reviews_count":
+            queryset = queryset.annotate(reviews_count=Count('reviews')).order_by('-reviews_count')
+
+        return queryset.annotate(
+            friends_count=Count('friends'),
+            reviews_count=Count('reviews')
+        )
 
 
 class UserDetailView(LoginRequiredMixin,
