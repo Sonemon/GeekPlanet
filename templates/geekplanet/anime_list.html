@@ -4,9 +4,11 @@
   <div class="container">
     <h1 class="display-1 text-light">
       Anime
+      {% if is_moderator %}
       <a href="{% url 'geekplanet:anime-create' %}" class="btn btn-lg btn-light link-to-page ml-3">
         Add new Anime
       </a>
+      {% endif %}
     </h1>
 
     <div class="row mt-4">

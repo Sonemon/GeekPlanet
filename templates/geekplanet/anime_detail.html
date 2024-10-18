@@ -3,12 +3,15 @@
 {% block content %}
   <div class="container mt-5">
     <div class="d-flex justify-content-between mb-3">
-      <a href="{% url 'geekplanet:anime-list' %}?page={{ request.GET.page }}" class="btn btn-primary">
+      <a href="{% url 'geekplanet:anime-list' %}?page={{ request.GET.page }}"
+         class="btn btn-lg btn-primary link-to-page ml-3">
         Back to Anime List
       </a>
-      <a href="{% url 'geekplanet:anime-update' pk=object.id %}" class="btn btn-secondary">
-        Update Anime INFO
-      </a>
+      {% if is_moderator %}
+        <a href="{% url 'geekplanet:anime-update' pk=object.id %}" class="btn btn-lg btn-light link-to-page ml-3">
+          Update Anime INFO
+        </a>
+      {% endif %}
     </div>
     <div class="row">
       <div class="col-md-4">
@@ -19,7 +22,7 @@
         <p class="card-text"><strong>Anime Type:</strong> {{ object.anime_type }}</p>
         <p class="card-text"><strong>Number of Episodes:</strong> {{ object.episodes }}</p>
         <p class="card-text"><strong>Episode Duration:</strong> {{ object.episode_duration }} minutes</p>
-        <p class="card-text"><strong>Genres:</strong> 
+        <p class="card-text"><strong>Genres:</strong>
           {% for genre in object.genres.all %}
             {{ genre }}{% if not forloop.last %}, {% endif %}
           {% endfor %}

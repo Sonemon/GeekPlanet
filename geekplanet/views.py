@@ -3,7 +3,7 @@ import random
 
 from django.conf import settings
 from django.contrib.auth import login
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -25,6 +25,15 @@ class BasePageMixin:
         context["current_user"] = self.request.user
         context["is_moderator"] = self.request.user.groups.filter(name="Moderators").exists()
         return context
+
+
+class ModeratorGroupRequiredMixin(UserPassesTestMixin):
+
+    def test_func(self):
+        return self.request.user.groups.filter(name="Moderators").exists()
+
+    def handle_no_permission(self):
+        return redirect(reverse_lazy("geekplanet:mainpage"))
 
 
 class MainPageView(BasePageMixin,
@@ -134,6 +143,7 @@ class AnimeListView(BasePageMixin,
 
 
 class AnimeCreateView(LoginRequiredMixin,
+                      ModeratorGroupRequiredMixin,
                       BasePageMixin,
                       generic.CreateView):
     model = Anime
@@ -150,6 +160,7 @@ class AnimeDetailView(BasePageMixin,
 
 
 class AnimeUpdateView(LoginRequiredMixin,
+                      ModeratorGroupRequiredMixin,
                       BasePageMixin,
                       generic.UpdateView):
     model = Anime
