@@ -13,8 +13,6 @@ from PIL import Image
 
 import uuid
 
-from django.db.models import Avg
-
 
 class User(AbstractUser):
     profile_picture = models.ImageField(upload_to="profile_pictures/", null=True, blank=True)
@@ -110,7 +108,7 @@ class Anime(models.Model):
         average = Review.objects.filter(
             content_type=anime_content_type,
             object_id=self.id
-        ).aggregate(Avg('rating'))['rating__avg']
+        ).aggregate(models.Avg('rating'))['rating__avg']
 
         return round(average, 2) if average is not None else 0.0
 

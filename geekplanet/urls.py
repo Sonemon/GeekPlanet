@@ -1,5 +1,7 @@
 from django.urls import path
 from .views import (
+    add_friend,
+    remove_friend,
     MainPageView,
     CustomLoginView,
     CustomLogoutView,
@@ -24,6 +26,8 @@ urlpatterns = [
     path("geeks/", UserListView.as_view(), name="user-list"),
     path("geeks/<int:pk>/", UserDetailView.as_view(), name="user-detail"),
     path("geeks/<int:pk>/update/", UserUpdateView.as_view(), name="user-update"),
+    path("geeks/<int:pk>/add/", add_friend, name="add-friend"),
+    path("geeks/<int:pk>/remove/", remove_friend, name="remove-friend"),
     path("animes/", AnimeListView.as_view(), name="anime-list"),
     path("animes/create/", AnimeCreateView.as_view(), name="anime-create"),
     path("animes/<int:pk>/", AnimeDetailView.as_view(), name="anime-detail"),

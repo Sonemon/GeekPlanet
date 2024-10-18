@@ -3,6 +3,7 @@ import random
 
 from django.conf import settings
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.contenttypes.models import ContentType
@@ -15,6 +16,24 @@ from .forms import AnimeForm, UserForm, ReviewForm
 from .models import User, Anime, Review
 
 
+@login_required
+def add_friend(request, pk):
+    friend = get_object_or_404(User, pk=pk)
+    if request.user != friend:
+        request.user.friends.add(friend)
+
+    return redirect('geekplanet:user-list')
+
+
+@login_required
+def remove_friend(request, pk):
+    friend = get_object_or_404(User, pk=pk)
+    if request.user != friend:
+        request.user.friends.remove(friend)
+
+    return redirect('geekplanet:user-list')
+
+
 class BasePageMixin:
     area_name = "GeekPlanet"
 
@@ -24,8 +43,12 @@ class BasePageMixin:
         background_images = os.listdir(background_images_path)
         context["background_image"] = random.choice(background_images)
         context["current_area"] = self.area_name
-        context["current_user"] = self.request.user
+        current_user = self.request.user
+        context["current_user"] = current_user
         context["is_moderator"] = self.request.user.groups.filter(name="Moderators").exists()
+        friends_ids = set(current_user.friends.values_list('id', flat=True))
+        context["friends_ids"] = friends_ids
+
         return context
 
 
@@ -104,7 +127,10 @@ class UserListView(LoginRequiredMixin,
     area_name = "Geeks"
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().prefetch_related('reviews').annotate(
+            friends_count=Count('friends'),
+            reviews_count=Count('reviews'),
+        )
 
         sort_by = self.request.GET.get('sort_by')
         if sort_by == "friends_count":

@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-  {% if user_list %}
-    <div class="container py-5">
-      <h1 class="display-4 text-light text-center mb-5">Find Other Geeks!</h1>
+  <div class="container py-5">
+    <h1 class="display-4 text-light text-center mb-5">Find Other Geeks!</h1>
 
+    {% if user_list %}
       <div class="row mb-4">
         <div class="col-md-6 offset-md-3">
           <form method="GET" action="{% url 'geekplanet:user-list' %}">
@@ -23,53 +23,50 @@
           </form>
         </div>
       </div>
-    
+
       <div class="row justify-content-center">
         {% for geek in user_list %}
-          <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-            <a href="#"
-               data-bs-toggle="modal"
-               data-bs-target="#userModal"
-               data-geek='{
-               "id": "{{ geek.id }}",
-               "username": "{{ geek.username }}",
-               "friends": {{ geek.friends.count }},
-               "reviews": {{ geek.reviews.count }}
-               }'
-               class="text-decoration-none text-reset">
+          {% if geek.id != current_user.id %}
+            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+              <a href="{% url "geekplanet:user-detail" pk=geek.id %}" class="text-decoration-none text-reset">
+                <div class="card bg-dark text-light h-100 shadow-lg border-0"
+                     style="border-radius: 15px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                  <div class="card-body text-center d-flex flex-column align-items-center p-4">
+                    <img src="{{ geek.get_profile_picture }}" alt="{{ geek.username }}'s avatar"
+                         class="rounded-circle border border-3 border-light shadow-sm mb-3"
+                         style="width: 120px; height: 120px; object-fit: cover;">
+                    <h4 class="card-title fw-bold text-info mb-1">{{ geek.username }}</h4>
+                    <div class="d-flex align-items-center mb-2">
+                      <i class="fas fa-user-friends me-2 text-light" style="font-size: 1.2rem;"></i>
+                      <p class="mb-0"><strong>{{ geek.friends.count }}</strong> friends</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <i class="fas fa-star me-2 text-warning" style="font-size: 1.2rem;"></i>
+                      <p class="mb-0"><strong>{{ geek.reviews.count }}</strong> reviews</p>
+                    </div>
 
-              <div class="card bg-dark text-light h-100 shadow-lg border-0"
-                   style="border-radius: 15px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                    {% if geek.id in friends_ids %}
+                      <form action="{% url 'geekplanet:remove-friend' geek.id %}" method="POST" class="w-100">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger w-100"><strong>Remove friend</strong></button>
+                      </form>
+                    {% else %}
+                      <form action="{% url 'geekplanet:add-friend' geek.id %}" method="POST" class="w-100">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary w-100"><strong>Add friend</strong></button>
+                      </form>
+                    {% endif %}
 
-                <div class="card-body text-center d-flex flex-column align-items-center p-4">
-                  <img
-                      src="{{ geek.get_profile_picture }}"
-                      alt="{{ geek.username }}'s avatar"
-                      class="rounded-circle border border-3 border-light shadow-sm mb-3"
-                      style="width: 120px; height: 120px; object-fit: cover;">
-
-                  <h4 class="card-title fw-bold text-info mb-1">{{ geek.username }}</h4>
-
-                  <div class="d-flex align-items-center mb-2">
-                    <i class="fas fa-user-friends me-2 text-light" style="font-size: 1.2rem;"></i>
-                    <p class="mb-0"><strong>{{ geek.friends.count }}</strong> friends</p>
-                  </div>
-
-                  <div class="d-flex align-items-center">
-                    <i class="fas fa-star me-2 text-warning" style="font-size: 1.2rem;"></i>
-                    <p class="mb-0"><strong>{{ geek.reviews.count }}</strong> reviews</p>
                   </div>
                 </div>
-              </div>
-            </a>
-          </div>
+              </a>
+            </div>
+          {% endif %}
         {% endfor %}
+
       </div>
-    </div>
-    {% include "geekplanet/user_modal.html" %}
-  {% else %}
-    <div class="container py-5">
+    {% else %}
       <h1 class="display-4 text-light text-center">There are no geeks in the service.</h1>
-    </div>
-  {% endif %}
+    {% endif %}
+  </div>
 {% endblock %}
