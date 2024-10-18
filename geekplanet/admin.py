@@ -9,7 +9,7 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Anime)
 class AnimeAdmin(admin.ModelAdmin):
-    list_display = ("title", "anime_type", "status", "user_rating", "start_date", "end_date")
+    list_display = ("title", "anime_type", "status", "start_date", "end_date")
     list_filter = ("anime_type", "status")
 
 

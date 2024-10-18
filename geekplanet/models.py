@@ -3,13 +3,17 @@ from io import BytesIO
 from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.conf import settings
 
 from PIL import Image
 
 import uuid
+
+from django.db.models import Avg
 
 
 class User(AbstractUser):
@@ -86,7 +90,6 @@ class Anime(models.Model):
     episode_duration = models.PositiveIntegerField()
     genres = models.ManyToManyField(Genre, related_name="animes")
     status = models.CharField(max_length=50, choices=STATUS_CHOICES)
-    user_rating = models.DecimalField(max_digits=3, decimal_places=2)
     description = models.TextField()
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
@@ -100,10 +103,25 @@ class Anime(models.Model):
         else:
             return self.DEFAULT_ANIME_PICTURE_URL
 
+    @property
+    def average_rating(self) -> float:
+        reviews = Review.objects.filter(
+            content_type=ContentType.objects.get_for_model(self),
+            object_id=self.id,
+        )
+        if reviews.exists():
+            return round(reviews.aggregate(Avg('rating'))['rating__avg'], 2)
+        return 0.0
+
+    def get_reviews(self):
+        return Review.objects.filter(
+            content_type=ContentType.objects.get_for_model(self),
+            object_id=self.id,
+        )
+
     def save(self, *args, **kwargs):
         if self.anime_picture:
             self.anime_picture.name = f"{uuid.uuid4()}_picture.png"
-
         super().save(*args, **kwargs)
 
 
@@ -116,7 +134,12 @@ class Review(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reviews")
     content = models.TextField()
-    rating = models.PositiveIntegerField()
+    rating = models.PositiveIntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(10),
+        ]
+    )
     character = models.CharField(max_length=10, choices=CHARACTER_CHOICES)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -127,3 +150,15 @@ class Review(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user.username} - {self.related_object}"
+
+    def clean(self):
+        if Review.objects.filter(
+            user=self.user,
+            content_type=self.content_type,
+            object_id=self.object_id,
+        ).exists():
+            raise ValidationError("You have already reviewed this content.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
