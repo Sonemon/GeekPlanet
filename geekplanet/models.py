@@ -105,13 +105,14 @@ class Anime(models.Model):
 
     @property
     def average_rating(self) -> float:
-        reviews = Review.objects.filter(
-            content_type=ContentType.objects.get_for_model(self),
-            object_id=self.id,
-        )
-        if reviews.exists():
-            return round(reviews.aggregate(Avg('rating'))['rating__avg'], 2)
-        return 0.0
+        anime_content_type = ContentType.objects.get_for_model(Anime)
+
+        average = Review.objects.filter(
+            content_type=anime_content_type,
+            object_id=self.id
+        ).aggregate(Avg('rating'))['rating__avg']
+
+        return round(average, 2) if average is not None else 0.0
 
     def get_reviews(self):
         return Review.objects.filter(

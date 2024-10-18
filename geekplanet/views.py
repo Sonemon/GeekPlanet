@@ -6,12 +6,13 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Avg, OuterRef, Subquery
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 
 from .forms import AnimeForm, UserForm, ReviewForm
-from .models import User, Anime, AnimeType, Review
+from .models import User, Anime, Review
 
 
 class BasePageMixin:
@@ -135,12 +136,39 @@ class UserUpdateView(LoginRequiredMixin,
         return reverse_lazy("geekplanet:user-detail", kwargs={"pk": self.request.user.id})
 
 
-class AnimeListView(BasePageMixin,
-                    generic.ListView):
+class AnimeListView(BasePageMixin, generic.ListView):
     model = Anime
     paginate_by = 20
     template_name = "geekplanet/anime_list.html"
     area_name = "Animes"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        selected_status = self.request.GET.get("status")
+        if selected_status:
+            queryset = queryset.filter(status=selected_status)
+
+        sort_by = self.request.GET.get("sort_by")
+        if sort_by == "last_added":
+            queryset = queryset.order_by("-id")
+        elif sort_by == "best_rated":
+            anime_content_type = ContentType.objects.get_for_model(Anime)
+
+            rating_subquery = Review.objects.filter(
+                content_type=anime_content_type,
+                object_id=OuterRef("pk")
+            ).values("object_id").annotate(avg_rating=Avg("rating")).values("avg_rating")
+
+            queryset = queryset.annotate(avg_rating=Subquery(rating_subquery)).order_by("-avg_rating")
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["status_choices"] = Anime.STATUS_CHOICES
+        context["selected_status"] = self.request.GET.get("status")
+        return context
 
 
 class AnimeCreateView(LoginRequiredMixin,
