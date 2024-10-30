@@ -90,3 +90,12 @@ class ReviewForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["rating"].initial = 1
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )

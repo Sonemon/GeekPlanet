@@ -16,28 +16,24 @@
           </div>
         {% endif %}
         <form method="post" action="{% url 'geekplanet:login' %}">
-          {% csrf_token %}
-          <div class="mb-3">
-            <label for="id_username" class="form-label">Username:</label>
-            <div class="input-group">
-              {{ form.username }}
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_username" class="form-label fs-5">Username:</label>
+                <input type="text" class="form-control" id="id_username" name="username" required>
             </div>
-          </div>
-          <div class="mb-3">
-            <label for="id_password" class="form-label">Password:</label>
-            <div class="input-group">
-              {{ form.password }}
+            <div class="mb-3">
+                <label for="id_password" class="form-label fs-5">Password:</label>
+                <input type="password" class="form-control" id="id_password" name="password" required>
             </div>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="rememberMe">
-            <label class="form-check-label" for="rememberMe">
-              Remember me
-            </label>
-          </div>
-          <div class="d-grid gap-2 mt-4">
-            <button type="submit" class="btn btn-primary">Login</button>
-          </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="rememberMe">
+                <label class="form-check-label" for="rememberMe">
+                    Remember me
+                </label>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Login</button>
+            </div>
         </form>
       </div>
     

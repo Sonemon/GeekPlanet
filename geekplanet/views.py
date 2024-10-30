@@ -12,7 +12,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 
-from .forms import AnimeForm, UserForm, ReviewForm
+from .forms import AnimeForm, UserForm, ReviewForm, SearchForm
 from .models import User, Anime, Review
 
 
@@ -39,15 +39,31 @@ class BasePageMixin:
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
+
         background_images_path = os.path.join(settings.BASE_DIR, "static", "img", "backgrounds")
         background_images = os.listdir(background_images_path)
         context["background_image"] = random.choice(background_images)
-        context["current_area"] = self.area_name
+
         current_user = self.request.user
+        context["current_area"] = self.area_name
         context["current_user"] = current_user
         context["is_moderator"] = self.request.user.groups.filter(name="Moderators").exists()
-        friends_ids = set(current_user.friends.values_list('id', flat=True))
-        context["friends_ids"] = friends_ids
+        if self.request.user.is_authenticated:
+            friends_ids = set(current_user.friends.values_list('id', flat=True))
+            context["friends_ids"] = friends_ids
+
+        search_form = SearchForm(self.request.GET or None)
+        query = self.request.GET.get("q", "")
+
+        query_users, query_animes = [], []
+        if search_form.is_valid() and query:
+            query_users = User.objects.filter(username__icontains=query)
+            query_animes = Anime.objects.filter(title__icontains=query)
+
+        context["search_form"] = search_form
+        context["query"] = query
+        context["query_users"] = query_users
+        context["query_animes"] = query_animes
 
         return context
 
@@ -71,6 +87,11 @@ class MainPageView(BasePageMixin,
         context["num_animes"] = Anime.objects.count()
         context["num_geeks"] = User.objects.count()
         return context
+
+
+class SearchPage(BasePageMixin,
+                 generic.TemplateView):
+    template_name = "geekplanet/search_page.html"
 
 
 class CustomLoginView(BasePageMixin,
@@ -143,6 +164,11 @@ class UserListView(LoginRequiredMixin,
             reviews_count=Count('reviews')
         )
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(reverse_lazy("geekplanet:mainpage"))
+        return super().dispatch(request, *args, **kwargs)
+
 
 class UserDetailView(LoginRequiredMixin,
                      BasePageMixin,
@@ -178,7 +204,7 @@ class UserUpdateView(LoginRequiredMixin,
 
 class AnimeListView(BasePageMixin, generic.ListView):
     model = Anime
-    paginate_by = 20
+    paginate_by = 12
     template_name = "geekplanet/anime_list.html"
     area_name = "Animes"
 

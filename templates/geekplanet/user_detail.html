@@ -20,5 +20,21 @@
         <p class="card-text"><strong>BIO:</strong> {{ object.bio }}</p>
       </div>
     </div>
+    {% if object.id.reviews %}
+      <div class="row">
+        <div class="col-md-12">
+          <h2 class="my-4">Reviews</h2>
+          {% for review in object.id.reviews.all %}
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">{{ review.title }}</h5>
+                <p class="card-text">{{ review.content }}</p>
+                <p class="card-text"><small class="text-muted">Posted by {{ review.user.username }}</small></p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
   </div>
 {% endblock %}
