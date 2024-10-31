@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <h1 class="display-1 text-light">
+      Search results for "{{ query }}":
+    </h1>
+
+    <h2 class="text-light">Found {{ query_animes|length }} animes and {{ query_users|length }} users.</h2>
+
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <div class="row">
+          {% if query_animes %}
+            <h2 class="display-2 text-light">
+              Anime:
+            </h2>
+            <div class="row">
+              {% for anime in query_animes|slice:":10" %}
+                <div class="col-md-3 mb-4">
+                  <div class="card" style="width: 100%; height: 100%; position: relative; overflow: hidden;">
+                    <a href="{% url 'geekplanet:anime-detail' pk=anime.id %}" class="text-decoration-none text-light">
+                      <img src="{{ anime.get_anime_picture }}" alt="{{ anime.title }}"
+                           style="height: 400px; width: 100%; object-fit: cover;">
+                      <div class="card-body anime-info"
+                           style="position: absolute; bottom: 0; left: 0; right: 0; background-color: rgba(0, 0, 0, 0.8); padding: 10px; transition: transform 0.5s ease;">
+                        <h5 class="card-title">
+                          {{ anime.title }}{% if anime.start_date %} ({{ anime.start_date.year }}){% endif %}</h5>
+                        <p class="card-text"><strong>Type:</strong> {{ anime.anime_type }}</p>
+                        <p class="card-text"><strong>Status:</strong> {{ anime.get_status_display }}</p>
+                        <p class="card-text"><strong>Rating:</strong> {{ anime.average_rating }}</p>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+              </div>
+          {% endif %}
+          {% if query_users %}
+            <h2 class="display-2 text-light">
+              Users:
+            </h2>
+            {% for geek in query_users %}
+              {% if geek.id != current_user.id %}
+                <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                  <a href="{% url "geekplanet:user-detail" pk=geek.id %}" class="text-decoration-none text-reset">
+                    <div class="card bg-dark text-light h-100 shadow-lg border-0"
+                         style="border-radius: 15px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                      <div class="card-body text-center d-flex flex-column align-items-center p-4">
+                        <img src="{{ geek.get_profile_picture }}" alt="{{ geek.username }}'s avatar"
+                             class="rounded-circle border border-3 border-light shadow-sm mb-3"
+                             style="width: 120px; height: 120px; object-fit: cover;">
+                        <h4 class="card-title fw-bold text-info mb-1">{{ geek.username }}</h4>
+                        <div class="d-flex align-items-center mb-2">
+                          <i class="fas fa-user-friends me-2 text-light" style="font-size: 1.2rem;"></i>
+                          <p class="mb-0"><strong>{{ geek.friends.count }}</strong> friends</p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                          <i class="fas fa-star me-2 text-warning" style="font-size: 1.2rem;"></i>
+                          <p class="mb-0"><strong>{{ geek.reviews.count }}</strong> reviews</p>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          {#          {% if %}#}
+          {#            <h1 class="display-1 text-light">No results found.</h1>#}
+          {#          {% endif %}#}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

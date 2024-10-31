@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="d-flex justify-content-between mb-3">
+      <a href="{% url 'geekplanet:anime-list' %}?page={{ request.GET.page }}"
+         class="btn btn-lg btn-primary link-to-page ml-3">
+        Back to Anime List
+      </a>
+      {% if is_moderator %}
+        <a href="{% url 'geekplanet:anime-update' pk=object.id %}" class="btn btn-lg btn-light link-to-page ml-3">
+          Update Anime INFO
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <img src="{{ object.get_anime_picture }}" class="img-fluid" alt="{{ object.title }}">
+
+        <div class="progress mb-3 mt-3" style="height: 25px;">
+          <div class="progress-bar bg-dark" role="progressbar"
+               style="width: {{ object.average_rating|floatformat:0 }}0%;" aria-valuenow="{{ object.average_rating }}"
+               aria-valuemin="0" aria-valuemax="10">
+            <strong class="text-light" style="font-size: 1rem;">
+              Rating: <strong class="font-weight-bold">{{ object.average_rating }}</strong> | Total
+              Reviews: {{ object.rew_count }}
+            </strong>
+          </div>
+        </div>
+
+        {% if user_reviewed %}
+          <button class="btn btn-lg btn-danger mb-3 w-100" disabled>
+            You already reviewed
+          </button>
+        {% else %}
+          <a href="{% url 'geekplanet:anime-add-review' object.id %}" class="btn btn-lg btn-success mb-3 w-100">
+            Add My Review
+          </a>
+        {% endif %}
+      </div>
+
+      <div class="col-md-8 bg-opacity-75 bg-dark p-4">
+        <h1 class="card-title">{{ object.title }}</h1>
+        <p class="card-text"><strong>Anime Type:</strong> {{ object.anime_type }}</p>
+        <p class="card-text"><strong>Rating:</strong> {{ object.average_rating }}</p>
+        <p class="card-text"><strong>Number of Episodes:</strong> {{ object.episodes }}</p>
+        <p class="card-text"><strong>Episode Duration:</strong> {{ object.episode_duration }} minutes</p>
+        <p class="card-text"><strong>Genres:</strong>
+          {% for genre in object.genres.all %}
+            {{ genre }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </p>
+        <p class="card-text"><strong>Status:</strong> {{ object.get_status_display }}</p>
+        <p class="card-text"><strong>Description:</strong> {{ object.description }}</p>
+        <p class="card-text"><strong>Start Date:</strong> {{ object.start_date|date:"Y-m-d" }}</p>
+        <p class="card-text"><strong>End Date:</strong> {{ object.end_date|date:"Y-m-d" }}</p>
+      </div>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="mb-3">
+      <form method="get" class="d-inline">
+        <button type="submit" class="btn btn-light me-2" name="character" value="">
+          All Reviews
+        </button>
+        <button type="submit" class="btn btn-success me-2" name="character" value="positive">
+          Positive
+        </button>
+        <button type="submit" class="btn btn-dark me-2" name="character" value="neutral">
+          Neutral
+        </button>
+        <button type="submit" class="btn btn-danger" name="character" value="negative">
+          Negative
+        </button>
+      </form>
+    </div>
+
+    <div class="reviews bg-dark bg-opacity-75 p-4 rounded-3">
+      <h2 class="text-light mb-4">Reviews</h2>
+      {% for review in reviews %}
+        <div class="card mb-3 
+                {% if review.character == "positive" %}bg-success bg-opacity-50
+                {% elif review.character == "neutral" %}bg-dark bg-opacity-75
+                {% elif review.character == "negative" %}bg-danger bg-opacity-50
+                {% endif %}">
+          <div class="card-body">
+            <h4 class="card-title">
+              <a href="{% url 'geekplanet:user-detail' pk=review.user.id %}"
+                 class="text-light text-decoration-none text-reset">
+                <img src="{{ review.user.get_profile_picture }}" alt="{{ review.user.username }}`s profile picture"
+                     class="rounded-circle"
+                     style="width: 50px; height: 50px; margin-right: 10px;">
+                <strong>{{ review.user.username }}</strong>
+              </a>
+            </h4>
+            <p class="card-text" style="font-size: 1.1rem;">{{ review.content }}</p>
+            <p class="card-text">
+              <small class="text-white" style="font-size: 1.2rem;"><strong>Rating: {{ review.rating }}</strong></small>
+              |
+              <small class="text-white" style="font-size: 1.2rem;">{{ review.get_character_display }}</small>
+            </p>
+            <p class="card-text">
+              <small class="text-white">Posted on: {{ review.created_at|date:"Y-m-d H:i" }}</small>
+            </p>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-md-8 bg-white p-4 rounded-3">
+          <h3 class="text-muted">No reviews yet. Be the first to leave a review!</h3>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

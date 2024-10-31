@@ -1,0 +1,13 @@
+<div class="col">
+  <form action="{% url 'geekplanet:search-page' %}" method="get" class="d-flex justify-content-center w-100">
+    <input
+        class="form-control me-2 w-75"
+        type="text"
+        name="q"
+        placeholder="🔍 Search Anime, Film etc"
+        aria-label="Search"
+        value="{{ query|default:'' }}"
+    required>
+    <button class="btn btn-success" type="submit">Search</button>
+  </form>
+</div>

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="d-flex justify-content-between mb-3">
+      {% if current_user.id == object.id or is_moderator %}
+        <a href="{% url 'geekplanet:user-update' pk=object.id %}" class="btn btn-lg btn-light link-to-page ml-3">
+          Update my INFO
+        </a>
+      {% endif %}
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <img src="{{ object.get_profile_picture }}" class="img-fluid" alt="{{ object.username }}`s avatar">
+      </div>
+      <div class="col-md-8 bg-opacity-50 bg-dark p-4">
+        <h1 class="card-title mb-3">{{ object.username }}</h1>
+        <p class="card-text"><strong>First name:</strong> {{ object.first_name }}</p>
+        <p class="card-text"><strong>Last name:</strong> {{ object.last_name }}</p>
+        <p class="card-text"><strong>BIO:</strong> {{ object.bio }}</p>
+      </div>
+    </div>
+    {% if object.id.reviews %}
+      <div class="row">
+        <div class="col-md-12">
+          <h2 class="my-4">Reviews</h2>
+          {% for review in object.id.reviews.all %}
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">{{ review.title }}</h5>
+                <p class="card-text">{{ review.content }}</p>
+                <p class="card-text"><small class="text-muted">Posted by {{ review.user.username }}</small></p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

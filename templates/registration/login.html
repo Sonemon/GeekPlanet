@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg bg-dark text-light" style="width: 500px; border-radius: 15px;">
+      <!-- Image Section -->
+      <img src="{% static 'img/login_gif.gif' %}" class="card-img-top" alt="Login Image" style="border-radius: 15px 15px 0 0; height: 200px; object-fit: cover;">
+
+      <!-- Form Section -->
+      <div class="card-body">
+        <h1 class="card-title text-center display-2 mb-3">Login</h1>
+        {% if form.errors %}
+          <div class="alert alert-danger" role="alert">
+            Your username and password didn't match. Please try again.
+          </div>
+        {% endif %}
+        <form method="post" action="{% url 'geekplanet:login' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_username" class="form-label fs-5">Username:</label>
+                <input type="text" class="form-control" id="id_username" name="username" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_password" class="form-label fs-5">Password:</label>
+                <input type="password" class="form-control" id="id_password" name="password" required>
+            </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="rememberMe">
+                <label class="form-check-label" for="rememberMe">
+                    Remember me
+                </label>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Login</button>
+            </div>
+        </form>
+      </div>
+    
+      <div class="card-footer text-center" style="border-radius: 0 0 15px 15px;">
+        <p>Don't have an account? <a href="{% url 'geekplanet:register' %}">Sign up</a></p>
+      </div>
+    </div>
+  </div>
+{% endblock %}
