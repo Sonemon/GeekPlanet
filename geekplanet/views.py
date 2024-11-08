@@ -199,7 +199,7 @@ class UserUpdateView(LoginRequiredMixin,
         return form_class(**form_kwargs)
 
     def get_success_url(self):
-        return reverse_lazy("geekplanet:user-detail", kwargs={"pk": self.request.user.id})
+        return reverse_lazy("geekplanet:login")
 
 
 class AnimeListView(BasePageMixin, generic.ListView):

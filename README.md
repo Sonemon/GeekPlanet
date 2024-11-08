@@ -11,7 +11,19 @@ Welcome to **GeekPlanet** — a community-driven platform where geeks can track,
 This project is very much a work in progress, but I’m excited to keep building and deploying new features to make GeekPlanet a go-to platform for fans everywhere. Stay tuned for updates as I add more functionality and design tweaks!
 
 ## 🌐 Check it Out
-Currently, the project is still in development, so the online deployment is yet to come. But don’t worry, I’ll have it live soon!
+
+Visit the website in your browser:  
+[**GeekPlanet**](https://geekplanet.onrender.com/)
+
+### 🔐 Login Details
+
+You can either register your own profile or use the default one:
+
+- **Username**: `Pika`
+- **Password**: `12345`
+
+Feel free to explore and enjoy the site! 🎉
+
 
 ---
 

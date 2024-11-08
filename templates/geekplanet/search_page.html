@@ -36,7 +36,7 @@
               {% endfor %}
               </div>
           {% endif %}
-          {% if query_users %}
+          {% if query_users and user.is_authenticated %}
             <h2 class="display-2 text-light">
               Users:
             </h2>
@@ -66,9 +66,6 @@
               {% endif %}
             {% endfor %}
           {% endif %}
-          {#          {% if %}#}
-          {#            <h1 class="display-1 text-light">No results found.</h1>#}
-          {#          {% endif %}#}
         </div>
       </div>
     </div>
