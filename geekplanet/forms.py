@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.auth import authenticate, login
 
 from geekplanet.models import User, Anime, Review
 

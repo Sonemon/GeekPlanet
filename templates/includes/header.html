@@ -26,7 +26,7 @@
 
     <div class="col-auto text-end d-flex align-items-center">
       {% if user.is_authenticated %}
-        <img src="{{ current_user.get_profile_picture }}" alt="{{ current_user.username }}`s profile picture"
+        <img src="{{ current_user.profile_picture.url }}" alt="{{ current_user.username }}`s profile picture"
              class="rounded-circle"
              style="width: 40px; height: 40px; margin-right: 10px;">
         <span class="me-3">

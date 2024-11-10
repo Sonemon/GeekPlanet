@@ -16,7 +16,7 @@
 
     <div class="row">
       <div class="col-md-4">
-        <img src="{{ object.get_anime_picture }}" class="img-fluid" alt="{{ object.title }}">
+        <img src="{{ object.anime_picture.url }}" class="img-fluid" alt="{{ object.title }}">
 
         <div class="progress mb-3 mt-3" style="height: 25px;">
           <div class="progress-bar bg-dark" role="progressbar"
@@ -89,7 +89,7 @@
             <h4 class="card-title">
               <a href="{% url 'geekplanet:user-detail' pk=review.user.id %}"
                  class="text-light text-decoration-none text-reset">
-                <img src="{{ review.user.get_profile_picture }}" alt="{{ review.user.username }}`s profile picture"
+                <img src="{{ review.user.profile_picture.url }}" alt="{{ review.user.username }}`s profile picture"
                      class="rounded-circle"
                      style="width: 50px; height: 50px; margin-right: 10px;">
                 <strong>{{ review.user.username }}</strong>
